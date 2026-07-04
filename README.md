@@ -1,4 +1,4 @@
-# tpd-sbi
+# tpd-sbi: calibrated Bayesian inversion of thermal desorption spectra
 
 Calibrated Bayesian inversion of temperature-programmed desorption (TPD/TDS) spectra via simulation-based inference.
 
