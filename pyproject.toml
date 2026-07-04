@@ -1,0 +1,12 @@
+[project]
+name = "tpdsbi"
+version = "0.9.0"
+description = "Calibrated Bayesian inversion of thermal-desorption spectra via SBI"
+requires-python = ">=3.10"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["tpdsbi*"]

@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.egg-info/
+data/_tmp_*.csv
+out_*.txt
+reproduce_core_out.txt
+models/pilot_rows.npy
+models/abc_posterior_jung.npy
+figures/*
+!figures/.gitkeep
