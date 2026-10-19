@@ -2,9 +2,9 @@
 
 Calibrated Bayesian inversion of temperature-programmed desorption (TPD/TDS) spectra via simulation-based inference.
 
-A single heating ramp does not determine desorption parameters the way point fits imply. This code inverts a TPD curve into the full posterior over activation energy, prefactor, site-energy width, and reaction order, using a conditional normalizing flow trained on a Polanyi-Wigner forward model. The posterior is calibration-checked: 90% intervals contain the truth 90% of the time on held-out simulations, including for derived quantities like retention.
+A TPD measurement heats a sample at a steady rate and records the gas-release rate against temperature. The usual analysis (Redhead, Kissinger) reads one activation energy off the peak position; a single heating ramp does not determine the desorption parameters that well. This code inverts a TPD curve into the full posterior over activation energy Ea, prefactor ν, the spread of binding energies across sites, and reaction order n, using a neural network (a conditional normalizing flow) trained on curves simulated from the Polanyi-Wigner rate law. The posterior is calibration-checked: 90% intervals contain the truth 90% of the time on held-out simulations, including for derived quantities like retention (the fraction of adsorbate still bound after a given time at a fixed temperature).
 
-Applied to 10 digitized published curves (hydrogenated graphene, graphene oxide, nanodiamond), the posteriors show that the reported "anomalously low" carbon prefactors (K0 = 9-180 s^-1) are consistent with single-site fitting artifacts of broadened spectra: fitting single-site models to simulated heterogeneous surfaces with ordinary nu = 1e13 reproduces the published low-K0 pattern, and the calibrated posteriors on the real curves place the standard 1e13 inside the credible interval for all 10.
+Applied to 10 digitized published curves (hydrogenated graphene, graphene oxide, nanodiamond), the posteriors show that the reported "anomalously low" carbon prefactors (ν = 9-180 s^-1) are consistent with single-site fitting artifacts of broadened spectra: fitting single-site models to simulated heterogeneous surfaces with ordinary nu = 1e13 reproduces the published low-ν pattern, and the calibrated posteriors on the real curves place the standard 1e13 inside the credible interval for all 10.
 
 ## Install
 
@@ -23,7 +23,7 @@ Pinned versions in `requirements.txt`.
     python analyze_my_tpd.py --demo
     python analyze_my_tpd.py mydata.csv --beta 0.5 --hold 298
 
-Input: two-column CSV (temperature in K, signal in any units). `--beta` is your heating rate in K/s.
+Input: two-column CSV (temperature in K, signal in any units). `--beta` is your heating rate in K/s. `--hold` is the temperature (K) at which the retention forecast is made.
 Output: posterior summaries, a fit-quality check, a retention forecast at the hold temperature, and a 4-panel figure in `figures/user/`.
 
 ## Reproduce
@@ -38,11 +38,10 @@ Figures are regenerated into `figures/` (shipped empty).
 
 ## Results (10-curve corpus)
 
-- median hidden 90% uncertainty on Ea from a single ramp: 1.23 eV
-- log10(nu) is essentially unconstrained by one ramp (~13 decades); this
-  survives informative nu-priors
+- median width of the 90% credible interval on Ea from a single ramp: 1.23 eV
+- log10(nu) is essentially unconstrained by one ramp (~13 decades), even with a prior that favors nu = 1e13
 - room-temperature retention forecasts spread ~19 orders of magnitude
-- reaction order for hydrogenated graphene: n = 1.04 [0.82, 1.31]
+- reaction order for hydrogenated graphene: n = 1.04 [0.82, 1.31] (n = 1: molecules leave independently; n = 2: recombinative)
 - negative control: 30/30 single-site nu=1e13 truths recovered, 0/30
   spuriously low-nu posteriors
 
